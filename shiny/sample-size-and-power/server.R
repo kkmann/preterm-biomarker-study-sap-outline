@@ -63,6 +63,10 @@ shinyServer(function(input, output) {
     
     output$plt_power <- renderPlot({
     	
+    	validate(
+			need(input$n, 'Sample size mut be specified!')
+	    )
+    	
         n_real <- input$n * (1 - input$rho^2) / (1 + input$dropout)
     	
         tbl_power <- tibble(

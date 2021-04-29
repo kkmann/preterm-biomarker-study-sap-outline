@@ -64,13 +64,13 @@ and present it within 20 min to the audience. You may decide about further assum
 ### Rationale for Study
 
 * Identified early: **preventative care** for PD possible
-* **Assumption:** AB measurable with ignorable risk to mother and child 
+* **Assumption:** AB measurable with ignorable risk to mother and child </br>
 (e.g. maternal blood sample, vaginal secretion swab) $\leadsto$ positive risk-benefit
 
 
 .footnote[
 
-[1] Ferré C *et al.* 2007. *CDC*. http://dx.doi.org/10.15585/mmwr.mm6543a1
+[1] [Ferré C *et al.* 2007. *Center for Disease Control*.](http://dx.doi.org/10.15585/mmwr.mm6543a1)
 
 ]
 
@@ -101,7 +101,7 @@ knitr::include_graphics("images/ga-methods.png")
 
 .footnote[
 
-[2] Hoffman CS *et al.* 2008. Comparison of gestational age at birth based on last menstrual period and ultrasound during the first trimester. Paediatr Perinat Epidemiol. doi:10.1111/j.1365-3016.2008.00965.x.
+[2] [Hoffman CS *et al.* 2008. *Paediatr Perinat Epidemiol.*](https://doi.org/10.1111/j.1365-3016.2008.00965.x)
 
 ]
 
@@ -109,6 +109,8 @@ knitr::include_graphics("images/ga-methods.png")
 # Statistical Model
 
 * Binary biomarker, cutoff already fixed: $\operatorname{AB}_{0/1} := \operatorname{AB}(20) \geq 50\operatorname{ng/mL}$
+
+* **Assumption:** measurement modalities of $\operatorname{AB}(20)$ sufficiently well defined
 
 * Maternal age is **confounder** $\leadsto$ affects both risk of $\operatorname{PD}$ and level of $\operatorname{AB}_{0/1}$
 
@@ -155,33 +157,27 @@ knitr::include_graphics("images/ga-methods.png")
 
 * Let $\beta_{\operatorname{AB}}$ be regression coefficient of $\operatorname{AB}_{0/1}$ (adjusted log OR)
 
-* $\mathcal{H}_0: \beta_{\operatorname{AB}} = 0$, test via asymptotic, model-based t-test [1]
-
-.footnote[
-
-[1] Alternative: Cochran-Mantel-Haenszel test, more later
-
-]
+* $\mathcal{H}_0: \beta_{\operatorname{AB}} = 0$, test via asymptotic, model-based t-test
 
 
 ---
-# Caveat: Age Effect
+# Non-Linear Age Effect
 
 .pull-left[
 
-* Maternal age: continuous
+* $\operatorname{PD} \sim \operatorname{Age} + \operatorname{AB}_{0/1}$ implies linear effect on log OR of age
 
-* Linear effect on log-odds of PD implausible [1] $\leadsto$ biased $\widehat{\beta_{\operatorname{AB}}}$
+* Implausible [3] $\leadsto$ biased $\widehat{\beta_{\operatorname{AB}}}$
 
-* Solution: binned age groups $\leadsto$ captures non-linear effect
+* Solution: binned age groups
 
-* Define discrete maternal $\operatorname{Age}_{dscr}$ using categories from [1] (starting at 18 years)
+* Define **discrete** $\operatorname{Age}_{dscr}$ using categories from [3] (starting at 18 years)
 
 ]
 
 .pull-right[
 
-```{r pd-vs-age, echo=FALSE, out.height="300px", fig.align="center"}
+```{r pd-vs-age, echo=FALSE, out.height="266px", out.width="400px", fig.align="center"}
 knitr::include_graphics("images/pd-risk-vs-age.png")
 ```
 
@@ -189,7 +185,7 @@ knitr::include_graphics("images/pd-risk-vs-age.png")
 
 .footnote[
 
-[1] Fuchs *et al.* 2018. *PLOS One*. doi:10.1371/journal.pone.0191002
+[3] Fuchs *et al.* 2018. *PLOS One*. doi:10.1371/journal.pone.0191002
 
 ]
 
@@ -208,41 +204,32 @@ knitr::include_graphics("images/pd-risk-vs-age.png")
 
 * Adjust for center variation via random effect (save degrees of freedom)
 
-* Blinding? Unethical if strong prior evidence of biomarker performance
-	
-* Calculate sample size according to [1] for simple logistic regression with binary predictor (essentially: unbalanced $\chi^2$ test)
-
-.footnote[
-
-	[1] Hsieh FY *et al.* 1998. Statistics in Medicine. https://doi.org/10.1002/(SICI)1097-0258(19980730)17:14%3C1623::AID-SIM871%3E3.0.CO;2-S
-	
-]
+* If possible: staff/participants blinded to biomarker result </br>
+(unethical if strong prior evidence of biomarker performance!)
 
 
 
 ---
-# Sample Size - Inputs
+# Sample Size - Determinants
+	
+Sample size for logistic regression with binary predictor [4]
 
-1. Overall event rate, $\operatorname{Pr}[\operatorname{PD}=1]$: 1 in 10
+1. Overall event rate: $\operatorname{Pr}[\operatorname{PD}=1] = 1/10$, known from  [1]
 
-2. Prevalence, $\operatorname{Pr}[\operatorname{AB}_{0/1} = 1]$ 
+2. Prevalence of biomarker: $\operatorname{Pr}[\operatorname{AB}_{0/1} = 1]$ 
 
-3. Effect size: $\operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 1] - \operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 0]$
+3. Effect size: $$\operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 1, \operatorname{Age}] - \operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 0, \operatorname{Age}]$$
 
-4. Correlation coefficient $\rho$ of age and AB (for variance inflation factor)
+4. $\rho:=\operatorname{cor}[\operatorname{AB}_{0/1},\operatorname{Age}]$ (for variance inflation factor)
 
-5. Conditional error rates $\alpha=0.05$ (two-sided), $\beta=0.1$ [1]
+5. Conditional error rates $\alpha=0.05$ (two-sided), $\beta=0.1$ </br>
+	( $\beta$ flexible, should depend on projected market value $\leadsto$ utility maximization)
 
-6. Dropout rate, combination of:
-	1. Stillbirth
-	2. Abort
-	3. Withdrawal of consent 
-	4. Loss-to-follow-up
+6. Dropout rate: (iatrogenic) abort, withdrawal of consent, loss-to-follow-up, ...
 
 .footnote[
 
-[1] $\beta$ could be chosen smaller depending on 
-projected market value $\leadsto$ utility maximization
+[4] <a href="https://doi.org/10.1002/(SICI)1097-0258(19980730)17:14%3C1623::AID-SIM871%3E3.0.CO;2-S">Hsieh FY *et al.* 1998. Statistics in Medicine.</a>
 
 ]
 
@@ -251,59 +238,53 @@ projected market value $\leadsto$ utility maximization
 ---
 # Sample Size - Assumptions
 
-1. Proportion of target population with $\operatorname{AB}_{20} \geq 50\operatorname{ng/mL}$ 
-	* unlike to be very extreme 
-		($>>.5\leadsto$ cannot expect big risk difference, $<<.5$ economically uninteresting)
-	* Has to be part of trial rationale/protocol and previously assessed
-	* **Assumption:** 1 in 3 $\operatorname{AB}_{20} \geq 50\operatorname{ng/mL}$ 
+Prevalence $\operatorname{Pr}[\operatorname{AB}_{0/1}=1]$
 
-4. Correlation coefficient $\rho$ of age and biomarker (for variance inflation factor)
-	* needs to be positive for age to be a confounder
-	* cannot be too big since age would otherwise be a sufficient proxy for AB
-	* **Assumption:** $\rho=0.1$
+* Should be known before submission study
+* Unlikely to be frequent: Highly prevalent biomarker cannot lead to big risk difference (not specific)
+* **Assumption:** $\operatorname{Pr}[\operatorname{AB}_{0/1}=1] = 1/10$
 
-6. Dropout rate
-	* late miscarriages (post 20 weeks) and iatrogenic aborts very rate ($<<2%$)
-	* withdrawal of consent + loss-to-follow-up could be an issue since long follow-up and low-stakes towards the end
-	* **Assumption:** $2\% + 5\% = 7\%$
+Correlation coefficient $\rho$ of age and biomarker
+* Age is confounder $\leadsto$ must be positive
+* Not too big, otherwise age proxy for biomarker
+* **Assumption:** $\rho=0.2$
+
+Dropout rate
+* late (post 20 weeks) iatrogenic aborts very rare
+* withdrawal of consent + loss-to-follow-up could be an issue since long follow-up and low-stakes towards the end
+* **Assumption:** dropout rate of $5\%$
 	
 
 
 ---
 # Effect Size
 
-```{r pd-risk, echo=FALSE, out.height="250px", fig.align="center"}
+
+```{r pd-risk, echo=FALSE, out.height="300px", out.width="450px", fig.align="center"}
 knitr::include_graphics("images/pd-risk.png")
 ```
 
-* maximal age effect is about 2%
+* Maximal age effect is about $2\%$ [3]
 
-* **Assumption:** A (very) good biomarker might have twice the effect of age
-
-* **Assumption:** Population average risk difference of $4\%$ between AB+ and AB-
-
-.footnote[
-
-[1] Fuchs *et al.* 2018. *PLOS One*. doi:10.1371/journal.pone.0191002
-
-]
+* **Assumption:** Good biomarker: three times the effect of age </br>
+	$\leadsto$ population average risk difference of $6\%$
 
 
 ---
-# *Fiat n*
+# Let there be *'n'*
 
 .pull-left[
 
 ```{r sample-size, include=FALSE}
 source("../R/sample_size.R")
-rho <- .1
-dropout <- .07
+rho <- .2
+dropout <- .05
 alpha <- .05
 beta <- .1
-prev <- 1/3
+prev <- 1/10
 pd_rate <- 1/10
 n <- sample_size(
-	risk_difference = 4/100, # biomarker pos - biomarker neg
+	risk_difference = 6/100, # biomarker pos - biomarker neg
 	prevalence_biomarker = prev,
 	overall_event_rate = pd_rate,
 	alpha = alpha,
@@ -315,13 +296,14 @@ n <- sample_size(
 
 * With VIF: $n=`r ceiling(n / (1 - rho^2))`$
 
-* With dropout: $n = `r ceiling(n / (1 - rho^2) * (1 + dropout))` \approx 3000$
+* With dropout: $n = `r ceiling(n / (1 - rho^2) * (1 + dropout))` \approx 3600$
 
-* @15 centers $\approx 200$ per center, i.e. $\approx 20$ PD cases per center
+* Minimum of $100$ per center to avoid centers without PD (random effect unstable!)
 
-* Minimum of $100$ per center to avoid centers without PD (random effect unidentifiable!)
+* With 20 centers: $180$ per center, i.e. $\approx 18$ PD cases per center
 
-* 15 centers $\times$ 5 age groups $=$ 60 strata for CMH test - unstable $\leadsto$ prefer logistic regression model
+* 20 centers $\times$ 5 age groups $=$ 100 strata for CMH test - unstable! </br> 
+	$\leadsto$ logistic regression model
 
 ]
 
@@ -329,7 +311,7 @@ n <- sample_size(
 
 ```{r plot-sample-size, echo=FALSE, out.height="400px", fig.height=5.5, fig.width=4.5, dpi=600, warning=FALSE, fig.align="center"}
 tbl_n <- tibble(
-		delta = seq(0.01, 0.075, length.out = 100),
+		delta = seq(0.01, 0.1, length.out = 100),
 		`no dropout or VIF` = map_dbl(
 				delta, 
 				~sample_size(., 
@@ -351,13 +333,16 @@ tbl_n <- tibble(
 ggplot(tbl_n) +
 	aes(delta, `required sample size`, color = type) +
 	geom_line() +
-	geom_vline(xintercept = .04) +
+	geom_vline(xintercept = .06) +
 	geom_hline(yintercept =  ceiling(n / (1 - rho^2) * (1 + dropout))) +
 	scale_y_continuous(limits = c(0, 10000), breaks = seq(0, 10000, by = 1000), expand = c(0, 0)) +
-	scale_x_continuous(limits = c(0, .075), breaks = seq(0, 1, by = .01), expand = c(0, 0)) +
-	scale_color_discrete("") +
+	scale_x_continuous("risk difference AB+ - AB-", limits = c(.02, .1), breaks = seq(0, 1, by = .01), expand = c(0, 0)) +
+	scale_color_discrete("", guide = guide_legend(ncol = 2)) +
+	theme_bw(14) +
 	theme(
-		legend.position = "top"
+		legend.position = "top",
+		plot.margin = margin(1, 1, 1, 1, unit = "line"),
+		panel.grid.minor = element_blank()
 	)
 ```
 
@@ -367,9 +352,10 @@ ggplot(tbl_n) +
 ---
 # Trial Duration
 
-* **Assumption:** average birth clinic $\approx 1500$ births per year [1]
+* **Assumption:** average birth clinic $\approx 1500$ births per year [5]
 	
-* **Assumption:** negligible risk from measuring AB $\leadsto$ 10% recruitment $\leadsto 150/center/year$
+* **Assumption:** negligible risk from measuring AB, 10% recruitment potential </br> 
+	$\leadsto 150/\operatorname{center}/\operatorname{year}$
 
 * delayed response of (mostly) 17 weeks $\approx 4$ months for normal pregnancy
 
@@ -377,7 +363,7 @@ ggplot(tbl_n) +
 	
 .footnote[
 
-[1] Anecdotal evidence: St. Elisabeth Clinic, Heidelberg, Germany
+[5] Anecdotal evidence: St. Elisabeth Clinic, Heidelberg, Germany
 
 ]
 
@@ -385,22 +371,27 @@ ggplot(tbl_n) +
 ---
 # Missing Values
 
-* Low rate of dropout expected ( $\approx 5\%$ )- power not an issue, bias?
+* Missing covariates: MCAR plausible
+
+* Low rate of dropout expected ( $\approx 5\%$ ) $\leadsto$ power not an issue, bias?
 
 * MCAR debatable: 
-	* plausible: dropout chance increases with calendar time (less severe consequences the closer to 37 weeks)
-	* if AB is indeed prognostic it is likely to affect *timing* of PD
-	* $\leadsto$ missingness not independant of AB value
+	* Dropout could $\nearrow$ over time as consequences of PD $\searrow$
+	* If subhazard of PD not constant, $\leadsto$ dropout and PD not independent
 
-* In regression: CCA unbiased if missingness independent of outcome given predictor [1]
+* Regression: CCA unbiased if dropout $\perp \!\!\! \perp$ of outcome given predictors [6]
 
-* Missingness unlikely to depend on $PD$ in week 20+ any medical follow-up required in all scenarios
+* If "AB" is prognostic of birth date: dropout approx. $\perp \!\!\! \perp$ given "AB" </br>
+	$\leadsto$ under alternative: CCA ok
 
-* $\leadsto$ CCA is valid
+* Problem: CCA not valid under $\mathcal{H}_0$ if dropout hazard not constant
+
+* Solution: add more predictors (e.g. "smoking") to regression model </br>
+	$\leadsto$ MAR more plausible 
 
 .footnote[
 
-[1]  White R, Carlin JB. 2010. Bias and efficiency of multiple imputation compared with complete-case analysis for missing covariate values. *Statistics in Medicine*, 28:2920–2931.
+[6] [White R & Carlin JB. 2010. *Statistics in Medicine*](https://doi.org/10.1002/sim.3944)
 
 ]
 
@@ -410,49 +401,110 @@ ggplot(tbl_n) +
 
 * CCA of all participants who did not withdraw consent
 
-* t-test for fixed effect of AB+ in mixed-effects logistic regression 
-$PD \sim agediscrete + AB_discrete + (1 | center)$
+* t-test for non-null fixed effect of $\operatorname{Age}_{dscr}$ in mixed-effects logistic regression 
+$$\operatorname{PD} \sim \operatorname{Age}_{dscr} + \operatorname{AB}_{0/1} + \operatorname{smoking} + (1 | \operatorname{center})$$
 
-* Mixed effects degrees of freedom for t-statistic: Satterthwaite method [1]
+* Mixed effects degrees of freedom for t-statistic: Satterthwaite method [7]
 
-* using R 4.0.5 + lmer + lmertest
+* Using R (4.0.5) + lmer (1.1-26) + lmertest (3.1-3)
 
-* report adjusted OR + 95% CI as effect measure and compare with aOR of Age groups
+* Report aOR + 95% CI as effect measure and compare with aOR of age groups
 
-* report sensitivity / specificity with 95% CI
+* Report sensitivity / specificity with 95% CI (Clopper-Pearson)
 
 
 .footnote[
 
-[1] http://dx.doi.org/10.18637/jss.v082.i13
+[7] [Kuznetsova A *et al.* 2017. *Journal of Statistical Software.*](http://dx.doi.org/10.18637/jss.v082.i13)
+
+[8] [Clopper C & Pearson ES. 1934. *Biometrika.*](https://doi.org/10.1093/biomet/26.4.404)
 
 ]
 
 
+---
+class: top, right
+background-image: url("images/discussion.png")
+background-size: 33%
+# Discussion
+
+.footnote[
+
+code/slides available at: https://bit.ly/2PB0hNR </br>
+interactive version (RStudio): https://bit.ly/3gPXGuz
+
+]
 
 ---
 # Further Points
 
 * Study design:
-	* Blinding of staff/subjects - ethical?
-	* Preventive therapy: might delay but not prevent PD? What if it does?
+	* Blinding of staff/participants to results - ethical?
+	* **Preventive therapy**: might delay but not prevent PD? What if it does?
 
 * Sensitivity/secondary analyses:
 	* Missing values worst/best case
-	* Per-protocol analysis (e.g. exclude AB measurement outside of week 20)
-	* ROC analysis of cont' AB - cut-off right?
-	* Parametric survival analysis of 
-	$$\operatorname{time-to-delivery} \sim \operatorname{Age}_{dscr} + \operatorname{AB}$$
-	How does $AB$ influence 'birth hazard' between week 20 and 37?
+	* **Per-protocol** analysis (e.g. exclude "AB" measurement outside of week 20)
+	* **ROC analysis** of continuous "AB" - cut-off right?
+	* Parametric **survival analysis** (log-normal model) of 
+	$$\operatorname{time-to-birth} \sim \operatorname{Age}_{dscr} + \operatorname{AB}(20) + (1 | \operatorname{center})$$
+	How does "AB" influence 'birth hazard' between week 20 and 37?
 
 * Sample Size:
-	* Explore sample size / power interactively to determine best option
-	* Bayesian sample size: prior on effect and nuisance parameters </br>
-	$\leadsto$ minimize expected sample size or maximize expected utility
+	* Explore sample size / power **interactively**: https://bit.ly/3xIS4sf
+	* **Bayesian sample size**: prior on effect and nuisance parameters </br>
+	$\leadsto$ minimize expected sample size or **maximize expected utility**
 	
 	
-
 ---
-class: top, right
-# Discussion
+# Study Design Revisited
 
+* What if physicians can act on biomarker information?
+
+```{tikz diagram-extended, fig.ext = 'png', echo=FALSE}
+\usetikzlibrary{arrows,arrows.meta,automata,positioning}
+\tikzset{
+    state/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           minimum height=2em,
+           inner sep=5pt,
+           outer sep=5pt,
+           text centered,
+           },
+}
+\definecolor{zzffzz}{rgb}{0.6,1,0.6}
+\definecolor{ffcctt}{rgb}{1,0.8,0.2}
+\definecolor{yqyqdz}{rgb}{0.5019607843137255,0.5019607843137255,0.8509803921568627}
+\begin{tikzpicture}
+	\node [xshift=-3.75in](left) {};
+	\node [xshift=3.75in](right) {};
+	\node[state,%
+		xshift=-1.5in,%
+		anchor=center%
+	] (PD) {$\operatorname{PD}$};
+	\node[state,%
+		yshift=-.5in,%
+		anchor=center %
+	] (age) {$\operatorname{Age}$};
+	\node[state,%
+		xshift=1.5in,%
+		anchor=center %
+	] (AB) {$\operatorname{AB}_{0/1}$};
+	\node[state,%
+		yshift=.5in,%
+		anchor=center %
+	] (treatment) {$\operatorname{Treatment}$};
+	\draw [-{Stealth[scale=1.5]}] (age) -- node[above] {(a)} (PD);
+	\draw [-{Stealth[scale=1.5]}] (age) -- node[above] {(b)} (AB);
+	\draw [-{Stealth[scale=1.5]}] (AB) -- node[above,xshift=-.25in] {(c)} (PD);
+	\draw [-{Stealth[scale=1.5]}] (AB) -- node[above] {(d)} (treatment);
+	\draw [-{Stealth[scale=1.5]}] (treatment) -- node[above] {(e)} (PD);
+	\draw [-{Stealth[scale=1.5]}] (age) -- node[right,yshift=-.15in] {(f)} (treatment);
+\end{tikzpicture}
+```
+
+* Successful treatment would negate prognostic value (negative mediation)
+
+* Treatment might need to be randomized conditional on biomarker to make effect identifiable

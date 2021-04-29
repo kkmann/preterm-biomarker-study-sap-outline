@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -ex
+
+Rscript -e "tinytex::install()"
+Rscript -e "tinytex::tlmgr_install(c('standalone', 'fp', 'ms', 'pgf', 'grfext'))"

@@ -276,7 +276,7 @@ projected market value $\leadsto$ utility maximization
 knitr::include_graphics("images/pd-risk.png")
 ```
 
-* maximal age effect is be about 2%
+* maximal age effect is about 2%
 
 * **Assumption:** A (very) good biomarker might have twice the effect of age
 

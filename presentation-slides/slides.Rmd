@@ -1,5 +1,5 @@
 ---
-title:    "Task Presentation: Prognostic Biomarker Study"
+title:    "Task Presentation:</br>Prognostic Biomarker Study"
 subtitle: "Outline of a Statistical Analysis Plan"
 author:   "Kevin Kunzmann"
 date:     "May 3, 2021"
@@ -278,7 +278,7 @@ n <- sample_size(
 
 * Assumptions $\leadsto n=`r ceiling(n)`$
 
-* With VIF ($\rho$): $n=`r ceiling(n / (1 - rho^2))`$
+* With VIF ( $\rho$): $n=`r ceiling(n / (1 - rho^2))`$
 
 * With dropout: $n = `r ceiling(n / (1 - rho^2) * (1 + dropout))`$
 

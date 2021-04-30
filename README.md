@@ -10,7 +10,7 @@ highlighting key issues to consider and potential approaches.
 The repository supports the [The Reproducible Execution Environment Specification](https://repo2docker.readthedocs.io/en/latest/specification.html) 
 and can be explored interactively in the web browser without having to install or download any software.
 This feature is powered by the free service [mybinder.org](https://mybinder.org/). 
-Simply follow [this link]([https://mybinder.org/v2/gh/kkmann/preterm-biomarker-study-sap-outline/main?urlpath=rstudio) to open the repository in Rstudio in your browser.
+Simply follow [this link](https://mybinder.org/v2/gh/kkmann/preterm-biomarker-study-sap-outline/main?urlpath=rstudio) to open the repository in Rstudio in your browser.
 
 The markdown sources of the presentation slides are in `/presentation-slides`.
 If you want to rebuild the presentation slides, open `/presentation-slides/slides.Rmd` in Rstudio and click the "Knit" button.

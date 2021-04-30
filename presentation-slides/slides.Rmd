@@ -33,25 +33,6 @@ and present it within 20 min to the audience. You may decide about further assum
 
 
 ---
-# Preliminaries
-
-* I **focus on the statistical aspects** of the (statistical) analysis plan (SAP)
-
-* Some overlap with trial protocol
-
-* Formal requirements will be specified by the relevant SOPs and include
-	* trial protocol version used
-	* SAP version / date, *if applicable:* SAP revision + justification
-	* roles, affiliations, and responsibilities of all persons involved 
-		(data management, trial statistician, senior statistician, principal Investigator)
-	* signatures of all contributors
-	* references to relevant SOPs, Trial Master File
-	
-* I do not explicitly address 
-	* exact variable derivation from data base
-	* descriptive tables / listings
-
----
 ### Background: Preterm Delivery (PD) [1]
 
 * 1 in 10 babies born before week 37 (in the US)
@@ -82,8 +63,9 @@ and present it within 20 min to the audience. You may decide about further assum
 * Eligible adult (18+) pregnant women
 
 * PD: birth before week 37 [1]
-	* gestational age varies by method [2]
-	* **Assumption:** use ultrasound-based estimate
+	
+* measurement method impacts gestational age  [2] </br> 
+	**Assumption:** use ultrasound-based estimate
 
 * **Assumption:** Stillbirths are PD  
 
@@ -185,7 +167,7 @@ knitr::include_graphics("images/pd-risk-vs-age.png")
 
 .footnote[
 
-[3] Fuchs *et al.* 2018. *PLOS One*. doi:10.1371/journal.pone.0191002
+[3] [Fuchs *et al.* 2018. *PLOS One*.](https://doi.org/10.1371/journal.pone.0191002)
 
 ]
 
@@ -196,16 +178,16 @@ knitr::include_graphics("images/pd-risk-vs-age.png")
 * Endpoint properties:
 	1. Delayed response (0 to 17 weeks)
 	2. Common indication / broad target population
-	3. **Assumption:** measuring AB is cheap (**low marginal cost** of inclusion)
+	3. **Assumption:** measuring "AB" is cheap (**low marginal cost** of inclusion)
 	
-* $\leadsto$ group-sequential design unlikely to be beneficial
+* $\leadsto$ group-sequential design unlikely to be beneficial </br> (long delay after recruitment stop)
 
 * Better: recruit ASAP, single-stage, multi-centric 
 
 * Adjust for center variation via random effect (save degrees of freedom)
 
-* If possible: staff/participants blinded to biomarker result </br>
-(unethical if strong prior evidence of biomarker performance!)
+* Staff/participants **blinded** to biomarker result </br>
+(Discussion: unethical if strong prior evidence of biomarker performance!)
 
 
 
@@ -218,12 +200,14 @@ Sample size for logistic regression with binary predictor [4]
 
 2. Prevalence of biomarker: $\operatorname{Pr}[\operatorname{AB}_{0/1} = 1]$ 
 
-3. Effect size: $$\operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 1, \operatorname{Age}] - \operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 0, \operatorname{Age}]$$
+3. Effect size risk difference:
+$$\operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 1, \operatorname{Age}] - \operatorname{Pr}[\operatorname{PD} = 1|\operatorname{AB}_{0/1} = 0, \operatorname{Age}]$$
 
 4. $\rho:=\operatorname{cor}[\operatorname{AB}_{0/1},\operatorname{Age}]$ (for variance inflation factor)
 
-5. Conditional error rates $\alpha=0.05$ (two-sided), $\beta=0.1$ </br>
-	( $\beta$ flexible, should depend on projected market value $\leadsto$ utility maximization)
+5. Conditional error rates </br>
+	$\alpha=0.05$ (two-sided) </br>
+	$\beta=0.10$ (some flexibility here $\leadsto$ utility maximization?)
 
 6. Dropout rate: (iatrogenic) abort, withdrawal of consent, loss-to-follow-up, ...
 
@@ -238,7 +222,7 @@ Sample size for logistic regression with binary predictor [4]
 ---
 # Sample Size - Assumptions
 
-Prevalence $\operatorname{Pr}[\operatorname{AB}_{0/1}=1]$
+Biomarker prevalence $\operatorname{Pr}[\operatorname{AB}_{0/1}=1]$
 
 * Should be known before submission study
 * Unlikely to be frequent: Highly prevalent biomarker cannot lead to big risk difference (not specific)
@@ -246,11 +230,11 @@ Prevalence $\operatorname{Pr}[\operatorname{AB}_{0/1}=1]$
 
 Correlation coefficient $\rho$ of age and biomarker
 * Age is confounder $\leadsto$ must be positive
-* Not too big, otherwise age proxy for biomarker
+* Not too big, otherwise age proxy for biomarker $\leadsto$ useless
 * **Assumption:** $\rho=0.2$
 
 Dropout rate
-* late (post 20 weeks) iatrogenic aborts very rare
+* late (post 20 weeks) aborts very rare
 * withdrawal of consent + loss-to-follow-up could be an issue since long follow-up and low-stakes towards the end
 * **Assumption:** dropout rate of $5\%$
 	
@@ -294,9 +278,11 @@ n <- sample_size(
 
 * Assumptions $\leadsto n=`r ceiling(n)`$
 
-* With VIF: $n=`r ceiling(n / (1 - rho^2))`$
+* With VIF ($\rho$): $n=`r ceiling(n / (1 - rho^2))`$
 
-* With dropout: $n = `r ceiling(n / (1 - rho^2) * (1 + dropout))` \approx 3600$
+* With dropout: $n = `r ceiling(n / (1 - rho^2) * (1 + dropout))`$
+
+* Pragmatic: $n = 3600$
 
 * Minimum of $100$ per center to avoid centers without PD (random effect unstable!)
 
@@ -354,10 +340,10 @@ ggplot(tbl_n) +
 
 * **Assumption:** average birth clinic $\approx 1500$ births per year [5]
 	
-* **Assumption:** negligible risk from measuring AB, 10% recruitment potential </br> 
+* **Assumption:** negligible risk from measuring "AB", 10% recruitment potential </br> 
 	$\leadsto 150/\operatorname{center}/\operatorname{year}$
 
-* delayed response of (mostly) 17 weeks $\approx 4$ months for normal pregnancy
+* Delayed response of (mostly) 17 weeks $\approx 4$ months for normal pregnancy
 
 * $\leadsto$ Overall duration from recruitment start: about 1.5 to 2 years
 	
@@ -375,7 +361,7 @@ ggplot(tbl_n) +
 
 * Low rate of dropout expected ( $\approx 5\%$ ) $\leadsto$ power not an issue, bias?
 
-* MCAR debatable: 
+* Endpoint MCAR debatable:
 	* Dropout could $\nearrow$ over time as consequences of PD $\searrow$
 	* If subhazard of PD not constant, $\leadsto$ dropout and PD not independent
 
@@ -384,10 +370,10 @@ ggplot(tbl_n) +
 * If "AB" is prognostic of birth date: dropout approx. $\perp \!\!\! \perp$ given "AB" </br>
 	$\leadsto$ under alternative: CCA ok
 
-* Problem: CCA not valid under $\mathcal{H}_0$ if dropout hazard not constant
+* Problem: CCA potentially not valid under $\mathcal{H}_0$
 
 * Solution: add more predictors (e.g. "smoking") to regression model </br>
-	$\leadsto$ MAR more plausible 
+	$\leadsto$ MAR of endpoint more plausible 
 
 .footnote[
 
@@ -423,7 +409,7 @@ $$\operatorname{PD} \sim \operatorname{Age}_{dscr} + \operatorname{AB}_{0/1} + \
 
 
 ---
-class: top, right
+class: top, left
 background-image: url("images/discussion.png")
 background-size: 33%
 # Discussion
@@ -431,7 +417,8 @@ background-size: 33%
 .footnote[
 
 code/slides available at: https://bit.ly/2PB0hNR </br>
-interactive version (RStudio): https://bit.ly/3gPXGuz
+interactive version (RStudio): https://bit.ly/3gPXGuz </br>
+interactive sample size (shiny): https://bit.ly/3xIS4sf
 
 ]
 
@@ -444,9 +431,9 @@ interactive version (RStudio): https://bit.ly/3gPXGuz
 
 * Sensitivity/secondary analyses:
 	* Missing values worst/best case
-	* **Per-protocol** analysis (e.g. exclude "AB" measurement outside of week 20)
+	* **Per-protocol** analysis (exclude "AB" measurement outside of week 20)
 	* **ROC analysis** of continuous "AB" - cut-off right?
-	* Parametric **survival analysis** (log-normal model) of 
+	* Parametric **survival analysis** (log-normal model) of
 	$$\operatorname{time-to-birth} \sim \operatorname{Age}_{dscr} + \operatorname{AB}(20) + (1 | \operatorname{center})$$
 	How does "AB" influence 'birth hazard' between week 20 and 37?
 
@@ -454,10 +441,33 @@ interactive version (RStudio): https://bit.ly/3gPXGuz
 	* Explore sample size / power **interactively**: https://bit.ly/3xIS4sf
 	* **Bayesian sample size**: prior on effect and nuisance parameters </br>
 	$\leadsto$ minimize expected sample size or **maximize expected utility**
-	
-	
+
+
+---
+# Formal Aspects
+
+* Formal requirements will be specified by the relevant SOPs
+
+* Trial protocol version used
+
+* SAP version / date, *if applicable:* SAP revision + justification
+
+* Roles, affiliations, and responsibilities of all persons involved
+(data management, trial statistician, senior statistician, principal Investigator)
+
+* Signatures of all contributors
+
+* References to relevant SOPs, Trial Master File
+
+* Exact variable derivation from data base
+
+* Descriptive tables / listings
+
+
 ---
 # Study Design Revisited
+
+* Is blinding to biomarker status ethical?
 
 * What if physicians can act on biomarker information?
 
@@ -506,5 +516,7 @@ interactive version (RStudio): https://bit.ly/3gPXGuz
 ```
 
 * Successful treatment would negate prognostic value (negative mediation)
+
+* Estimand: prognostic effect under no treatment, under treatment as usual, under treatment conditional on biomarker?
 
 * Treatment might need to be randomized conditional on biomarker to make effect identifiable
